@@ -13,7 +13,7 @@ import 'verified_screen.dart';
 /// code "verifies" since there's no backend yet. Wire real OTP checking up
 /// once the database/API is in place.
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({super.key, required this.contact});
+  const OtpVerificationScreen({super.key, required this.contact, required verificationId, Object? resendToken});
 
   /// The email or phone number the code was "sent" to, shown in the subtitle.
   final String contact;

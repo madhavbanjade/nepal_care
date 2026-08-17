@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nepal_care/features/auth/screens/auth_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'services/firebase_options.dart';
@@ -8,6 +9,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //this is the firebase intilization optins for flutter
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+//Google Sign-In should be initialized once, before your login/signup screen tries to use:
+  await GoogleSignIn.instance.initialize(
+    serverClientId: '679531876538-19jbuuaed5hmm1dpru3040m0f3r2rsv4.apps.googleusercontent.com'
+  );
 
   runApp(const CareNepalApp());
 }
