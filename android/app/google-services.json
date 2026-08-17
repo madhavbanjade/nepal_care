@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "679531876538",
+    "project_id": "carenepal-cf3ec",
+    "storage_bucket": "carenepal-cf3ec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679531876538:android:99969124692a4111cef283",
+        "android_client_info": {
+          "package_name": "com.example.nepal_care"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6Zt7g9-2uyYDj7U7C94J948CCV4X_9hE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
