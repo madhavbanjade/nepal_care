@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nepal_care/features/widget/back_pill_button.dart';
 import 'package:nepal_care/features/widget/primary_button.dart';
 import 'package:nepal_care/features/widget/status_icon_badge.dart';
+import 'package:nepal_care/role/screens/user_dashboard.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_theme.dart';
 
@@ -52,7 +53,9 @@ class ProfileSubmittedScreen extends StatelessWidget {
                 label: 'Continue',
                 onPressed: () {
                   // TODO: replace with your real provider dashboard/home screen.
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                   Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const UserDashboard()),
+      );
                 }, showArrow: false,
               ),
               const Spacer(),

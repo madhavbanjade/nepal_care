@@ -4,7 +4,6 @@ import 'package:nepal_care/features/widget/primary_button.dart';
 import 'package:nepal_care/role/data/user_repository.dart';
 import 'package:nepal_care/role/data/user_role.dart';
 import 'package:nepal_care/role/screens/provider_profile_screen.dart';
-import 'package:nepal_care/role/screens/user_dashboard.dart';
 import 'package:nepal_care/role/widgets/onboarding_progress_bar.dart';
 import 'package:nepal_care/role/widgets/role_option_card.dart';
 import '../../../core/theme/app_colors.dart';
@@ -43,11 +42,11 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
 
       if (role == UserRole.customer) {
         // TODO: replace with your real customer dashboard/home screen.
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => UserDashboard()));
+        Navigator.of(context).pop();
       } else {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(builder: (_) => ProviderProfileScreen(uid: widget.uid)),
-        // );
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ProviderProfileScreen(uid: widget.uid)),
+        );
       }
     } catch (e) {
       if (!mounted) return;
