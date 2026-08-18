@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:nepal_care/features/auth/screens/select_role.dart';
 import 'package:nepal_care/features/widget/app_logo.dart';
 import 'package:nepal_care/features/widget/auth_tab.dart';
 import 'package:nepal_care/features/widget/contact_method_toogle.dart';
 import 'package:nepal_care/features/widget/labeled_divider.dart';
 import 'package:nepal_care/features/widget/primary_button.dart';
 import 'package:nepal_care/features/widget/social_login_button.dart';
+import 'package:nepal_care/role/screens/role_selection_screen.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_theme.dart';
 import 'otp_verification_screen.dart';
@@ -163,9 +163,11 @@ class _SignupBodyState extends State<_SignupBody> {
       // await credential.user?.sendEmailVerification();
 
       if (!mounted) return;
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => SelectRole()));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => RoleSelectionScreen(uid: credential.user!.uid),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       _showError(_friendlyError(e));
     } catch (e) {
@@ -383,13 +385,16 @@ class _LoginBodyState extends State<_LoginBody> {
 
     setState(() => _isLoading = true);
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => SelectRole()));
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => RoleSelectionScreen(uid: credential.user!.uid),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       _showError(_friendlyError(e));
     } catch (e) {
@@ -576,12 +581,12 @@ class _PhoneField extends StatelessWidget {
   }
 }
 
-/// Google / Apple ID row, shared by both forms.
-/// NOTE: not wired to real providers yet — see the roadmap notes shared
+/// Signs the user in with Google, then routes them into role selection —
+/// same destination as email/phone signup, just a different entry point.
 Future<void> _signInWithGoogle(BuildContext context) async {
   try {
-    final GoogleSignInAccount googleUser = await GoogleSignIn.instance
-        .authenticate();
+    final GoogleSignInAccount googleUser =
+        await GoogleSignIn.instance.authenticate();
 
     final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
@@ -589,32 +594,25 @@ Future<void> _signInWithGoogle(BuildContext context) async {
       idToken: googleAuth.idToken,
     );
 
-    final UserCredential userCredential = await FirebaseAuth.instance
-        .signInWithCredential(credential);
+    final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
 
     final User? user = userCredential.user;
 
-    if (user != null) {
-      print('Google Sign-In successful');
-      print('UID: ${user.uid}');
-      print('Name: ${user.displayName}');
-      print('Email: ${user.email}');
-
-      // Navigate only after successful authentication
-      if (context.mounted) {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => SelectRole()));
-      }
+    if (user != null && context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => RoleSelectionScreen(uid: user.uid)),
+      );
     }
   } on FirebaseAuthException catch (e) {
-    print('Firebase Auth Error: ${e.code}');
-    print('Message: ${e.message}');
+    debugPrint('Firebase Auth Error: ${e.code} — ${e.message}');
   } catch (e) {
-    print('Google Sign-In Error: $e');
+    debugPrint('Google Sign-In Error: $e');
   }
 }
 
+/// Google / Apple ID row, shared by both forms.
+/// NOTE: Apple ID isn't wired to a real provider yet.
 class _SocialRow extends StatelessWidget {
   final VoidCallback onGooglePressed;
   const _SocialRow({required this.onGooglePressed});
