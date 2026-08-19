@@ -1,15 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:nepal_care/features/widget/app_logo.dart';
-import 'package:nepal_care/features/widget/auth_tab.dart';
-import 'package:nepal_care/features/widget/contact_method_toogle.dart';
-import 'package:nepal_care/features/widget/labeled_divider.dart';
-import 'package:nepal_care/features/widget/primary_button.dart';
-import 'package:nepal_care/features/widget/social_login_button.dart';
-import 'package:nepal_care/role/screens/role_selection_screen.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
+import 'package:nepal_care/widgets/app_logo.dart';
+import 'package:nepal_care/widgets/auth_tab.dart';
+import 'package:nepal_care/widgets/contact_method_toogle.dart';
+import 'package:nepal_care/widgets/labeled_divider.dart';
+import 'package:nepal_care/widgets/primary_button.dart';
+import 'package:nepal_care/widgets/social_login_button.dart';
+import 'package:nepal_care/screens/role/role_selection_screen.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'otp_verification_screen.dart';
 
 /// The single auth screen. The logo, brand text, and Sign Up/Log In toggle

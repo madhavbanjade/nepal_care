@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 /// One line in the "Profile completeness" checklist — a check circle that
 /// fills in once that piece of the form is valid.

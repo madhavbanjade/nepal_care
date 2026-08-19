@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:nepal_care/features/widget/back_pill_button.dart';
-import 'package:nepal_care/features/widget/primary_button.dart';
-import 'package:nepal_care/features/widget/status_icon_badge.dart';
-import 'package:nepal_care/role/screens/user_dashboard.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
+import 'package:nepal_care/widgets/back_pill_button.dart';
+import 'package:nepal_care/widgets/primary_button.dart';
+import 'package:nepal_care/widgets/status_icon_badge.dart';
+import 'package:nepal_care/screens/dashboard/provider_dashboard.dart';
+import 'package:nepal_care/screens/dashboard/user_dashboard.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 
 /// Shown once a provider's profile has been submitted for verification.
@@ -52,9 +53,9 @@ class ProfileSubmittedScreen extends StatelessWidget {
               PrimaryButton(
                 label: 'Continue',
                 onPressed: () {
-                  // TODO: replace with your real provider dashboard/home screen.
+                  //later we will sent to signup page until the user is verified once it is verified only after we let him in..
                    Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const UserDashboard()),
+        MaterialPageRoute(builder: (_) => const ProviderDashboard()),
       );
                 }, showArrow: false,
               ),

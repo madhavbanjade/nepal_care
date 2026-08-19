@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 /// The "00:28 · Resend available in Resend code" block under the OTP button.
 /// Counts down from [seconds]; once it hits 0, "Resend code" becomes tappable

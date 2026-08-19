@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:nepal_care/features/widget/back_pill_button.dart';
-import 'package:nepal_care/features/widget/primary_button.dart';
-import 'package:nepal_care/role/data/provider_prrofile.dart';
-import 'package:nepal_care/role/data/user_repository.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
-import '../widgets/checklist_item.dart';
-import '../widgets/document_upload_field.dart';
-import '../widgets/onboarding_progress_bar.dart';
+import 'package:nepal_care/widgets/back_pill_button.dart';
+import 'package:nepal_care/widgets/primary_button.dart';
+import 'package:nepal_care/models/provider_prrofile.dart';
+import 'package:nepal_care/repositories/user_repository.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
+import 'package:nepal_care/widgets/checklist_item.dart';
+import 'package:nepal_care/widgets/document_upload_field.dart';
+import 'package:nepal_care/widgets/onboarding_progress_bar.dart';
 import 'profile_submitted_screen.dart';
 
 const _serviceCategories = [

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:nepal_care/features/widget/back_pill_button.dart';
-import 'package:nepal_care/features/widget/primary_button.dart';
-import 'package:nepal_care/role/data/user_repository.dart';
-import 'package:nepal_care/role/data/user_role.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
+import 'package:nepal_care/widgets/back_pill_button.dart';
+import 'package:nepal_care/widgets/primary_button.dart';
+import 'package:nepal_care/repositories/user_repository.dart';
+import 'package:nepal_care/core/enum/user_role.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
 
-import '../widgets/onboarding_progress_bar.dart';
-import '../widgets/role_option_card.dart';
+import 'package:nepal_care/widgets/onboarding_progress_bar.dart';
+import 'package:nepal_care/widgets/role_option_card.dart';
 import 'provider_profile_screen.dart';
+import '../dashboard/user_dashboard.dart';
 
 /// Step 1 of onboarding: pick Customer or Provider.
 ///
@@ -41,8 +42,10 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
       if (!mounted) return;
 
       if (role == UserRole.customer) {
-        // TODO: replace with your real customer dashboard/home screen.
-        Navigator.of(context).pop();
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const UserDashboard()),
+          (route) => false,
+        );
       } else {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => ProviderProfileScreen(uid: widget.uid)),

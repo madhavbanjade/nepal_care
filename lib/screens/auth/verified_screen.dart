@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nepal_care/features/widget/back_pill_button.dart';
-import 'package:nepal_care/features/widget/primary_button.dart';
-import 'package:nepal_care/features/widget/status_icon_badge.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_theme.dart';
+import 'package:nepal_care/widgets/back_pill_button.dart';
+import 'package:nepal_care/widgets/primary_button.dart';
+import 'package:nepal_care/widgets/status_icon_badge.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 
 /// Shown once the OTP is "verified" (dummy — no backend yet).

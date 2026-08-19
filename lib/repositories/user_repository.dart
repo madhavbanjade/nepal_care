@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:nepal_care/role/data/provider_prrofile.dart';
-import 'user_role.dart';
+import 'package:nepal_care/models/provider_prrofile.dart';
+import 'package:nepal_care/core/enum/user_role.dart';
 
 /// Everything to do with a user's role and (for providers) their
 /// verification profile. Screens only talk to this repository — never to
