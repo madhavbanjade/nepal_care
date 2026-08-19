@@ -26,6 +26,9 @@ class AppColors {
   static const Color background = Color(0xFFFFFFFF); // scaffold/card background
   static const Color statusGreenBg = Color(0xA8E4B0);
   static const Color statusPinkBg = Color(0xF7B9B9);
+  static const Color statusGreenText = Color(0x2E7D3A);
+
+  static Color? primary;
 
 
 }

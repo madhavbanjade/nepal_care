@@ -18,6 +18,15 @@ class ProviderProfile {
   final String bio;
   final String? idDocumentUrl;
 
+  factory ProviderProfile.fromMap(Map<String, dynamic> map) => ProviderProfile(
+        fullName: map['fullName'] as String? ?? 'Care provider',
+        phone: map['phone'] as String? ?? '',
+        serviceCategory: map['serviceCategory'] as String? ?? 'Care services',
+        yearsOfExperience: map['yearsOfExperience'] as String? ?? '',
+        bio: map['bio'] as String? ?? '',
+        idDocumentUrl: map['idDocumentUrl'] as String?,
+      );
+
   Map<String, dynamic> toMap() => {
         'fullName': fullName,
         'phone': phone,

@@ -8,7 +8,7 @@ import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'package:nepal_care/widgets/checklist_item.dart';
 import 'package:nepal_care/widgets/document_upload_field.dart';
 import 'package:nepal_care/widgets/onboarding_progress_bar.dart';
-import 'profile_submitted_screen.dart';
+import 'provider_profile_submitted_screen.dart';
 
 const _serviceCategories = [
   'Baby care',
@@ -101,7 +101,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
 
       if (!mounted) return;
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ProfileSubmittedScreen()),
+        MaterialPageRoute(builder: (_) => const ProviderProfileSubmittedScreen()),
       );
     } catch (e) {
       if (!mounted) return;

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:nepal_care/screens/role/customer_account_ready_screen.dart';
 import 'package:nepal_care/widgets/back_pill_button.dart';
 import 'package:nepal_care/widgets/primary_button.dart';
 import 'package:nepal_care/repositories/user_repository.dart';
 import 'package:nepal_care/core/enum/user_role.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
-
 import 'package:nepal_care/widgets/onboarding_progress_bar.dart';
 import 'package:nepal_care/widgets/role_option_card.dart';
 import 'provider_profile_screen.dart';
-import '../dashboard/user_dashboard.dart';
 
 /// Step 1 of onboarding: pick Customer or Provider.
 ///
@@ -42,9 +41,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
       if (!mounted) return;
 
       if (role == UserRole.customer) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const UserDashboard()),
-          (route) => false,
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const CustomerAccountReadyScreen()),
         );
       } else {
         Navigator.of(context).push(

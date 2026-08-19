@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:nepal_care/core/theme/app_colors.dart';
+import 'package:nepal_care/core/theme/app_text_theme.dart';
+import 'package:nepal_care/screens/dashboard/provider_dashboard.dart';
 import 'package:nepal_care/widgets/back_pill_button.dart';
 import 'package:nepal_care/widgets/primary_button.dart';
 import 'package:nepal_care/widgets/status_icon_badge.dart';
-import 'package:nepal_care/screens/dashboard/provider_dashboard.dart';
-import 'package:nepal_care/screens/dashboard/user_dashboard.dart';
-import 'package:nepal_care/core/theme/app_colors.dart';
-import 'package:nepal_care/core/theme/app_text_theme.dart';
 
-
-/// Shown once a provider's profile has been submitted for verification.
-/// Step 3 of the "3 steps" progress bar — no form here, just confirmation,
-/// so it doesn't show the progress bar itself.
-class ProfileSubmittedScreen extends StatelessWidget {
-  const ProfileSubmittedScreen({super.key});
+/// Confirmation shown after a provider submits their verification profile.
+class ProviderProfileSubmittedScreen extends StatelessWidget {
+  const ProviderProfileSubmittedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +25,6 @@ class ProfileSubmittedScreen extends StatelessWidget {
                 child: BackPillButton(onPressed: () => Navigator.of(context).maybePop()),
               ),
               const Spacer(),
-
               const Center(
                 child: StatusIconBadge(
                   icon: Icons.hourglass_top_outlined,
@@ -37,9 +32,7 @@ class ProfileSubmittedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Center(
-                child: Text('Profile submitted!', style: AppTextTheme.textTheme.headlineSmall),
-              ),
+              Center(child: Text('Profile submitted!', style: AppTextTheme.textTheme.headlineSmall)),
               const SizedBox(height: 8),
               Center(
                 child: Text(
@@ -49,15 +42,13 @@ class ProfileSubmittedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-
               PrimaryButton(
-                label: 'Continue',
-                onPressed: () {
-                  //later we will sent to signup page until the user is verified once it is verified only after we let him in..
-                   Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ProviderDashboard()),
-      );
-                }, showArrow: false,
+                label: 'Continue to provider dashboard',
+                onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const ProviderDashboard()),
+                  (route) => false,
+                ),
+                showArrow: false,
               ),
               const Spacer(),
             ],
