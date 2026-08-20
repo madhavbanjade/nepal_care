@@ -82,8 +82,20 @@ class UserRepository {
             continue;
           }
 
+          // Keep the dashboard restricted to actual provider accounts even if
+          // another user document were accidentally assigned this status.
+          if (data['role'] != UserRole.provider.value) {
+            debugPrint(
+              '[Verified providers] Skipped ${document.id}: role is not provider.',
+            );
+            continue;
+          }
+
           profiles.add(
-            ProviderProfile.fromMap(Map<String, dynamic>.from(profileData)),
+            ProviderProfile.fromMap(
+              Map<String, dynamic>.from(profileData),
+              uid: document.id,
+            ),
           );
         }
 

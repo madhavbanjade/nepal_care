@@ -24,11 +24,9 @@ class AppColors {
   static const Color borderGray = Color(0xFFE3E3E3); // input & pill borders
   static const Color surface = Color(0xFFF6F6F6); // unselected toggle bg, input fill
   static const Color background = Color(0xFFFFFFFF); // scaffold/card background
-  static const Color statusGreenBg = Color(0xA8E4B0);
-  static const Color statusPinkBg = Color(0xF7B9B9);
-  static const Color statusGreenText = Color(0x2E7D3A);
-
-  static Color? primary;
+  static const Color statusGreenBg = Color(0xFFA8E4B0);
+  static const Color statusPinkBg = Color(0xFFF7B9B9);
+  static const Color statusGreenText = Color(0xFF2E7D3A);
 
 
 }

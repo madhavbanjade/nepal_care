@@ -8,6 +8,8 @@ class ProviderProfile {
     required this.serviceCategory,
     required this.yearsOfExperience,
     required this.bio,
+    this.uid = '',
+    this.hourlyRate = 0,
     this.idDocumentUrl,
   });
 
@@ -16,14 +18,18 @@ class ProviderProfile {
   final String serviceCategory;
   final String yearsOfExperience;
   final String bio;
+  final String uid;
+  final int hourlyRate;
   final String? idDocumentUrl;
 
-  factory ProviderProfile.fromMap(Map<String, dynamic> map) => ProviderProfile(
+  factory ProviderProfile.fromMap(Map<String, dynamic> map, {String uid = ''}) => ProviderProfile(
         fullName: map['fullName'] as String? ?? 'Care provider',
         phone: map['phone'] as String? ?? '',
         serviceCategory: map['serviceCategory'] as String? ?? 'Care services',
         yearsOfExperience: map['yearsOfExperience'] as String? ?? '',
         bio: map['bio'] as String? ?? '',
+        uid: uid,
+        hourlyRate: (map['hourlyRate'] as num?)?.toInt() ?? 0,
         idDocumentUrl: map['idDocumentUrl'] as String?,
       );
 
@@ -33,6 +39,7 @@ class ProviderProfile {
         'serviceCategory': serviceCategory,
         'yearsOfExperience': yearsOfExperience,
         'bio': bio,
+        'hourlyRate': hourlyRate,
         'idDocumentUrl': idDocumentUrl,
       };
 }

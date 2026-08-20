@@ -52,6 +52,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _bioController = TextEditingController();
+  final _hourlyRateController = TextEditingController();
 
   String? _serviceCategory;
   String? _experienceLevel;
@@ -60,7 +61,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   @override
   void initState() {
     super.initState();
-    for (final controller in [_fullNameController, _phoneController, _bioController]) {
+    for (final controller in [_fullNameController, _phoneController, _bioController, _hourlyRateController]) {
       controller.addListener(() => setState(() {}));
     }
   }
@@ -70,6 +71,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
     _fullNameController.dispose();
     _phoneController.dispose();
     _bioController.dispose();
+    _hourlyRateController.dispose();
     super.dispose();
   }
 
@@ -78,11 +80,12 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
   bool get _hasCategory => _serviceCategory != null;
   bool get _hasExperience => _experienceLevel != null;
   bool get _hasBio => _bioController.text.trim().length >= 20;
+  bool get _hasHourlyRate => (int.tryParse(_hourlyRateController.text.trim()) ?? 0) > 0;
 
   // ID upload is optional and currently disabled entirely — it's excluded
   // from both completeness and the checklist below.
   bool get _isComplete =>
-      _hasFullName && _hasPhone && _hasCategory && _hasExperience && _hasBio;
+      _hasFullName && _hasPhone && _hasCategory && _hasExperience && _hasBio && _hasHourlyRate;
 
   Future<void> _handleSubmit() async {
     if (!_isComplete || _isSubmitting) return;
@@ -95,6 +98,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
         serviceCategory: _serviceCategory!,
         yearsOfExperience: _experienceLevel!,
         bio: _bioController.text.trim(),
+        hourlyRate: int.parse(_hourlyRateController.text.trim()),
         // idDocumentUrl intentionally omitted — no file storage for now.
       );
       await _userRepository.submitProviderProfile(widget.uid, profile);
@@ -194,6 +198,14 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
               ),
               const SizedBox(height: 14),
 
+              const _FieldLabel('Hourly rate (NPR)'),
+              TextField(
+                controller: _hourlyRateController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(hintText: 'e.g. 500'),
+              ),
+              const SizedBox(height: 14),
+
               const _FieldLabel('Short bio'),
               TextField(
                 controller: _bioController,
@@ -239,6 +251,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                     ChecklistItem(label: 'Phone', isComplete: _hasPhone),
                     ChecklistItem(label: 'Category', isComplete: _hasCategory),
                     ChecklistItem(label: 'Experience', isComplete: _hasExperience),
+                    ChecklistItem(label: 'Hourly rate', isComplete: _hasHourlyRate),
                     ChecklistItem(label: 'Bio (20+ chars)', isComplete: _hasBio),
                   ],
                 ),
