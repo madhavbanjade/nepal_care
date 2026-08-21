@@ -37,10 +37,14 @@ class UserRepository {
   /// Called right after role selection.
   Future<void> setRole(String uid, UserRole role) async {
     debugPrint('[Role selection] Saving role=${role.value} for uid=$uid');
-    await _userDoc(uid).set({
-      'role': role.value,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    await _firestore.runTransaction((transaction) async {
+      final reference = _userDoc(uid);
+      final existing = userRoleFromValue((await transaction.get(reference)).data()?['role'] as String?);
+      if (existing != null && existing != role) {
+        throw StateError('An account role has already been selected.');
+      }
+      transaction.set(reference, {'role': role.value, 'updatedAt': FieldValue.serverTimestamp()}, SetOptions(merge: true));
+    });
     debugPrint('[Role selection] Saved role=${role.value} for uid=$uid');
   }
 
@@ -55,6 +59,7 @@ class UserRepository {
     try {
       final verifiedProvidersQuery = _firestore
         .collection('users')
+        .where('role', isEqualTo: UserRole.provider.value)
         .where(
           'verificationStatus',
           isEqualTo: ProviderVerificationStatus.verified.value,
@@ -124,11 +129,19 @@ class UserRepository {
 
   /// Saves the provider's profile and marks verification as pending.
   Future<void> submitProviderProfile(String uid, ProviderProfile profile) {
-    return _userDoc(uid).set({
-      'role': UserRole.provider.value,
-      'providerProfile': profile.toMap(),
-      'verificationStatus': ProviderVerificationStatus.pending.value,
-      'submittedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    return _firestore.runTransaction((transaction) async {
+      final reference = _userDoc(uid);
+      final role = userRoleFromValue(
+        (await transaction.get(reference)).data()?['role'] as String?,
+      );
+      if (role != UserRole.provider) {
+        throw StateError('Only provider accounts can submit a provider profile.');
+      }
+      transaction.set(reference, {
+        'providerProfile': profile.toMap(),
+        'verificationStatus': ProviderVerificationStatus.pending.value,
+        'submittedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    });
   }
 }

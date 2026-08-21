@@ -7,7 +7,6 @@ import 'package:nepal_care/widgets/contact_method_toogle.dart';
 import 'package:nepal_care/widgets/labeled_divider.dart';
 import 'package:nepal_care/widgets/primary_button.dart';
 import 'package:nepal_care/widgets/social_login_button.dart';
-import 'package:nepal_care/screens/role/role_selection_screen.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'otp_verification_screen.dart';
@@ -156,18 +155,9 @@ class _SignupBodyState extends State<_SignupBody> {
 
     setState(() => _isLoading = true);
     try {
-      final credential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Optional: send a verification email instead of / in addition to OTP.
-      // await credential.user?.sendEmailVerification();
-
-      if (!mounted) return;
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => RoleSelectionScreen(uid: credential.user!.uid),
-        ),
-      );
     } on FirebaseAuthException catch (e) {
       _showError(_friendlyError(e));
     } catch (e) {
@@ -385,15 +375,9 @@ class _LoginBodyState extends State<_LoginBody> {
 
     setState(() => _isLoading = true);
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
-      );
-      if (!mounted) return;
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => RoleSelectionScreen(uid: credential.user!.uid),
-        ),
       );
     } on FirebaseAuthException catch (e) {
       _showError(_friendlyError(e));
@@ -594,16 +578,9 @@ Future<void> _signInWithGoogle(BuildContext context) async {
       idToken: googleAuth.idToken,
     );
 
-    final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
+    await FirebaseAuth.instance.signInWithCredential(credential);
 
-    final User? user = userCredential.user;
-
-    if (user != null && context.mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => RoleSelectionScreen(uid: user.uid)),
-      );
-    }
+    // AuthGate listens to Firebase Auth and routes to the saved role.
   } on FirebaseAuthException catch (e) {
     debugPrint('Firebase Auth Error: ${e.code} — ${e.message}');
   } catch (e) {

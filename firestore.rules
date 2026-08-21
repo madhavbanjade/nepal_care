@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      // Users can create their own account document and choose a role once.
+      allow create: if request.auth != null
+          && request.auth.uid == userId
+          && request.resource.data.role in ['customer', 'provider'];
+
+      // Roles are deliberately immutable after creation.
+      allow update: if request.auth != null
+          && request.auth.uid == userId
+          && request.resource.data.role == resource.data.role;
+
+      allow get: if request.auth != null
+          && (request.auth.uid == userId
+              || (resource.data.role == 'provider'
+                  && resource.data.verificationStatus == 'verified'));
+
+      // Provider discovery queries must only return verified provider accounts.
+      allow list: if request.auth != null
+          && resource.data.role == 'provider'
+          && resource.data.verificationStatus == 'verified';
+    }
+
+    match /bookings/{bookingId} {
+      // A signed-in customer can create only their own pending request for a
+      // verified provider.
+      allow create: if request.auth != null
+          && request.resource.data.customerId == request.auth.uid
+          && request.resource.data.status == 'pending'
+          && get(/databases/$(database)/documents/users/$(request.resource.data.providerId)).data.role == 'provider'
+          && get(/databases/$(database)/documents/users/$(request.resource.data.providerId)).data.verificationStatus == 'verified';
+
+      // A booking transaction first reads the deterministic slot document.
+      // Let signed-in users read a missing slot so a new booking can be
+      // created, but keep existing bookings private to their participants.
+      allow get: if request.auth != null
+          && (!exists(/databases/$(database)/documents/bookings/$(bookingId))
+              || resource.data.customerId == request.auth.uid
+              || resource.data.providerId == request.auth.uid);
+
+      // Provider dashboard queries are constrained by providerId.
+      allow list: if request.auth != null
+          && (resource.data.customerId == request.auth.uid
+              || resource.data.providerId == request.auth.uid);
+
+      // Only the assigned provider can accept or decline, without changing
+      // ownership or booking details.
+      allow update: if request.auth != null
+          && resource.data.providerId == request.auth.uid
+          && request.resource.data.providerId == resource.data.providerId
+          && request.resource.data.customerId == resource.data.customerId
+          && request.resource.data.status in ['accepted', 'declined'];
+
+      allow delete: if false;
+    }
+  }
+}

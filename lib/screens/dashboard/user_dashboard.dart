@@ -7,6 +7,8 @@ import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'package:nepal_care/models/provider_prrofile.dart';
 import 'package:nepal_care/repositories/user_repository.dart';
 import 'package:nepal_care/screens/dashboard/provider_list_screen.dart';
+import 'package:nepal_care/screens/profile/profile_screen.dart';
+import 'package:nepal_care/core/enum/user_role.dart';
 import 'package:nepal_care/widgets/booking_request_dialog.dart';
 
 /// Customer home screen. Only providers verified in Firestore are displayed.
@@ -61,7 +63,9 @@ class _UserDashboardState extends State<UserDashboard> {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: AppColors.background,
-        body: SafeArea(
+        body: _selectedNavIndex == 3
+            ? const ProfileScreen(role: UserRole.customer)
+            : SafeArea(
           child: StreamBuilder<List<ProviderProfile>>(
             stream: _repository.streamVerifiedProviderProfiles(),
             builder: (context, snapshot) {

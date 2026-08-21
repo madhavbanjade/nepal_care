@@ -80,7 +80,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
               Text('How will you use Care-Nepal?', style: AppTextTheme.textTheme.headlineSmall),
               const SizedBox(height: 6),
               Text(
-                'Choose your role — you can always switch later.',
+                'Choose the account type you will use with Care-Nepal.',
                 style: AppTextTheme.textTheme.bodyLarge?.copyWith(color: AppColors.textMuted),
               ),
               const SizedBox(height: 20),

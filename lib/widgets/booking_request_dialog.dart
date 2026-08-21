@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nepal_care/models/provider_prrofile.dart';
 import 'package:nepal_care/repositories/booking_repository.dart';
+import 'package:nepal_care/core/utils/user_display_name.dart';
 
 class BookingRequestDialog extends StatefulWidget {
   const BookingRequestDialog({super.key, required this.provider});
@@ -38,14 +40,28 @@ class _BookingRequestDialogState extends State<BookingRequestDialog> {
       await _repository.createBooking(
         provider: widget.provider,
         customerId: customer.uid,
-        customerName: customer.displayName ?? customer.email?.split('@').first ?? 'Customer',
+        customerName: userDisplayName(
+          displayName: customer.displayName,
+          email: customer.email,
+          fallback: 'Customer',
+        ),
         scheduledAt: DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute),
       );
       if (!mounted) return;
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Booking request sent to the provider.')));
+    } on FirebaseException catch (error) {
+      _showMessage(
+        error.code == 'permission-denied'
+            ? 'Booking access is not configured yet. Please contact support.'
+            : 'Could not send the booking request. Please try again.',
+      );
     } catch (error) {
-      _showMessage(error is StateError ? error.message : 'Could not send the booking request.');
+      _showMessage(
+        error is StateError
+            ? error.message
+            : 'Could not send the booking request. Please try again.',
+      );
     } finally {
       if (mounted) setState(() => _submitting = false);
     }

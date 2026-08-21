@@ -3,9 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/models/booking.dart';
 import 'package:nepal_care/repositories/booking_repository.dart';
+import 'package:nepal_care/core/enum/user_role.dart';
+import 'package:nepal_care/screens/profile/profile_screen.dart';
 
-class ProviderDashboard extends StatelessWidget {
+class ProviderDashboard extends StatefulWidget {
   const ProviderDashboard({super.key});
+
+  @override
+  State<ProviderDashboard> createState() => _ProviderDashboardState();
+}
+
+class _ProviderDashboardState extends State<ProviderDashboard> {
+  int _selectedNavIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +22,8 @@ class ProviderDashboard extends StatelessWidget {
     if (user == null) return const Scaffold(body: Center(child: Text('Please log in to see your bookings.')));
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(backgroundColor: AppColors.background, surfaceTintColor: Colors.transparent, title: const Text('Provider dashboard')),
-      body: StreamBuilder<List<Booking>>(
+      appBar: _selectedNavIndex == 3 ? null : AppBar(backgroundColor: AppColors.background, surfaceTintColor: Colors.transparent, title: const Text('Provider dashboard')),
+      body: _selectedNavIndex == 3 ? const ProfileScreen(role: UserRole.provider) : StreamBuilder<List<Booking>>(
         stream: BookingRepository().streamProviderBookings(user.uid),
         builder: (context, snapshot) {
           if (snapshot.hasError) return const Center(child: Text('Unable to load booking requests.'));
@@ -33,6 +42,18 @@ class ProviderDashboard extends StatelessWidget {
             if (accepted.isEmpty) const _EmptyBookings(message: 'Accepted bookings will appear here.') else ...accepted.map((item) => Padding(padding: const EdgeInsets.only(bottom: 12), child: _BookingCard(booking: item, canRespond: false))),
           ]);
         },
+      ),
+      bottomNavigationBar: NavigationBar(
+        height: 64,
+        selectedIndex: _selectedNavIndex,
+        onDestinationSelected: (index) => setState(() => _selectedNavIndex = index),
+        indicatorColor: const Color(0xFFF7C5C6),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.calendar_today_outlined), label: 'Schedule'),
+          NavigationDestination(icon: Icon(Icons.bar_chart_outlined), label: 'Earnings'),
+          NavigationDestination(icon: Icon(Icons.person_outline_rounded), selectedIcon: Icon(Icons.person_rounded), label: 'Profile'),
+        ],
       ),
     );
   }
