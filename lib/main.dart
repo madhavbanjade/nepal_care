@@ -7,7 +7,7 @@ import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //this is the firebase intilization optins for flutter....
+  //this is the firebase intilization optins for flutter.... hello
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
 //Google Sign-In should be initialized once, before your login/signup screen tries to use:
