@@ -1,11 +1,9 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'package:nepal_care/models/provider_prrofile.dart';
 import 'package:nepal_care/repositories/user_repository.dart';
+import 'package:nepal_care/screens/dashboard/provider_detail_screen.dart';
 import 'package:nepal_care/screens/dashboard/provider_list_screen.dart';
 import 'package:nepal_care/screens/profile/profile_screen.dart';
 import 'package:nepal_care/core/enum/user_role.dart';
@@ -297,57 +295,63 @@ class _ProviderCard extends StatelessWidget {
   String get _initials => profile.fullName.split(RegExp(r'\s+')).where((name) => name.isNotEmpty).take(2).map((name) => name[0].toUpperCase()).join();
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: const Color(0xFFEEEEEE)),
-          boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 8, offset: Offset(0, 3))],
+  Widget build(BuildContext context) => InkWell(
+        borderRadius: BorderRadius.circular(15),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ProviderDetailScreen(profile: profile)),
         ),
-        child: Row(children: [
-          Container(
-            width: 47,
-            height: 47,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: const Color(0xFFC8EAF8), borderRadius: BorderRadius.circular(12)),
-            child: Text(_initials.isEmpty ? 'CP' : _initials, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: const Color(0xFFEEEEEE)),
+            boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 8, offset: Offset(0, 3))],
           ),
-          const SizedBox(width: 11),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Flexible(child: Text(profile.fullName, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700))),
-              const SizedBox(width: 3),
-              const Icon(Icons.verified_rounded, color: Color(0xFF4CA9E0), size: 14),
-            ]),
-            const SizedBox(height: 2),
-            Text(profile.serviceCategory, style: AppTextTheme.textTheme.bodySmall),
-            const SizedBox(height: 4),
-            Row(children: [
-              const Icon(Icons.work_outline_rounded, size: 12, color: AppColors.textMuted),
-              const SizedBox(width: 3),
-              Flexible(child: Text(profile.yearsOfExperience, overflow: TextOverflow.ellipsis, style: AppTextTheme.textTheme.bodySmall)),
-            ]),
-            const SizedBox(height: 5),
-            const _AvailabilityChip(),
-          ])),
-          const SizedBox(width: 6),
-          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border_rounded, size: 18), visualDensity: VisualDensity.compact),
-            const SizedBox(height: 6),
-            SizedBox(
-              height: 29,
-              child: FilledButton(
-                onPressed: () => showDialog<void>(
-                  context: context,
-                  builder: (_) => BookingRequestDialog(provider: profile),
-                ),
-                style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12), backgroundColor: const Color(0xFF70B9E8), foregroundColor: AppColors.textDark, textStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
-                child: const Text('Book'),
-              ),
+          child: Row(children: [
+            Container(
+              width: 47,
+              height: 47,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: const Color(0xFFC8EAF8), borderRadius: BorderRadius.circular(12)),
+              child: Text(_initials.isEmpty ? 'CP' : _initials, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
             ),
+            const SizedBox(width: 11),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Flexible(child: Text(profile.fullName, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700))),
+                const SizedBox(width: 3),
+                const Icon(Icons.verified_rounded, color: Color(0xFF4CA9E0), size: 14),
+              ]),
+              const SizedBox(height: 2),
+              Text(profile.serviceCategory, style: AppTextTheme.textTheme.bodySmall),
+              const SizedBox(height: 4),
+              Row(children: [
+                const Icon(Icons.work_outline_rounded, size: 12, color: AppColors.textMuted),
+                const SizedBox(width: 3),
+                Flexible(child: Text(profile.yearsOfExperience, overflow: TextOverflow.ellipsis, style: AppTextTheme.textTheme.bodySmall)),
+              ]),
+              const SizedBox(height: 5),
+              const _AvailabilityChip(),
+            ])),
+            const SizedBox(width: 6),
+            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border_rounded, size: 18), visualDensity: VisualDensity.compact),
+              const SizedBox(height: 6),
+              SizedBox(
+                height: 29,
+                child: FilledButton(
+                  onPressed: () => showDialog<void>(
+                    context: context,
+                    builder: (_) => BookingRequestDialog(provider: profile),
+                  ),
+                  style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12), backgroundColor: const Color(0xFF70B9E8), foregroundColor: AppColors.textDark, textStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+                  child: const Text('Book'),
+                ),
+              ),
+            ]),
           ]),
-        ]),
+        ),
       );
 }
 
