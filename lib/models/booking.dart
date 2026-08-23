@@ -17,6 +17,8 @@ class Booking {
     required this.scheduledAt,
     required this.hourlyRate,
     required this.status,
+    this.location,
+    this.durationHours,
   });
 
   final String id;
@@ -28,6 +30,14 @@ class Booking {
   final DateTime scheduledAt;
   final int hourlyRate;
   final BookingStatus status;
+
+  /// Optional — not collected by BookingRequestDialog yet. Null until that
+  /// flow is extended to capture an address for the visit.
+  final String? location;
+
+  /// Optional — not collected by BookingRequestDialog yet. Null until that
+  /// flow is extended to capture how long the booking is for.
+  final double? durationHours;
 
   factory Booking.fromDocument(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
@@ -44,6 +54,8 @@ class Booking {
         (status) => status.value == data['status'],
         orElse: () => BookingStatus.pending,
       ),
+      location: data['location'] as String?,
+      durationHours: (data['durationHours'] as num?)?.toDouble(),
     );
   }
 }
