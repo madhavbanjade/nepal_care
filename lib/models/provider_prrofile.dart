@@ -1,7 +1,6 @@
 /// The data collected on the "Professional profile" form. Kept as a plain
 /// model separate from the Firestore repository so the UI never has to
 /// think about map keys directly.
-/// thien agf ugf w
 class ProviderProfile {
   const ProviderProfile({
     required this.fullName,
