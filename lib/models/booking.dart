@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum BookingStatus { pending, accepted, declined }
+/// `cancelled` (customer-initiated, before the provider responds or after
+/// acceptance) is distinct from `declined` (provider-initiated) — same end
+/// result ("not happening"), but worth telling apart for support/analytics.
+enum BookingStatus { pending, accepted, declined, cancelled }
 
 extension BookingStatusValue on BookingStatus {
   String get value => name;
@@ -31,13 +34,15 @@ class Booking {
   final int hourlyRate;
   final BookingStatus status;
 
-  /// Optional — not collected by BookingRequestDialog yet. Null until that
-  /// flow is extended to capture an address for the visit.
+  /// Optional — not collected by BookingRequestDialog yet.
   final String? location;
 
-  /// Optional — not collected by BookingRequestDialog yet. Null until that
-  /// flow is extended to capture how long the booking is for.
+  /// Optional — not collected by BookingRequestDialog yet.
   final double? durationHours;
+
+  DateTime? get endsAt => durationHours == null
+      ? null
+      : scheduledAt.add(Duration(minutes: (durationHours! * 60).round()));
 
   factory Booking.fromDocument(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;

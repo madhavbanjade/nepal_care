@@ -5,6 +5,7 @@ import 'package:nepal_care/models/provider_prrofile.dart';
 import 'package:nepal_care/repositories/user_repository.dart';
 import 'package:nepal_care/screens/dashboard/provider_detail_screen.dart';
 import 'package:nepal_care/screens/dashboard/provider_list_screen.dart';
+import 'package:nepal_care/screens/bookings/my_bookings_screen.dart';
 import 'package:nepal_care/screens/profile/profile_screen.dart';
 import 'package:nepal_care/core/enum/user_role.dart';
 import 'package:nepal_care/widgets/booking_request_dialog.dart';
@@ -63,7 +64,9 @@ class _UserDashboardState extends State<UserDashboard> {
         backgroundColor: AppColors.background,
         body: _selectedNavIndex == 3
             ? const ProfileScreen(role: UserRole.customer)
-            : SafeArea(
+            : _selectedNavIndex == 1
+                ? const MyBookingsScreen()
+                : SafeArea(
           child: StreamBuilder<List<ProviderProfile>>(
             stream: _repository.streamVerifiedProviderProfiles(),
             builder: (context, snapshot) {

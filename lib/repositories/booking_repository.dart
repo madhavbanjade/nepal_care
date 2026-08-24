@@ -54,6 +54,24 @@ class BookingRepository {
         return bookings;
       });
 
+  /// Powers "My Bookings" — every booking a customer has ever made, both
+  /// tabs (Upcoming/Past) are filtered client-side off this single stream.
+  Stream<List<Booking>> streamCustomerBookings(String customerId) => _bookings
+      .where('customerId', isEqualTo: customerId)
+      .snapshots()
+      .map((snapshot) {
+        final bookings = snapshot.docs.map(Booking.fromDocument).toList();
+        bookings.sort((a, b) => a.scheduledAt.compareTo(b.scheduledAt));
+        return bookings;
+      });
+
   Future<void> setBookingStatus(String bookingId, BookingStatus status) =>
       _bookings.doc(bookingId).update({'status': status.value});
+
+  /// Customer-initiated cancel. NOTE: requires the Firestore rule addition
+  /// that allows the *customer* (not just the provider) to move a booking's
+  /// status — the current rules only let the assigned provider update
+  /// status. See the updated firestore.rules shared alongside this file.
+  Future<void> cancelBooking(String bookingId) =>
+      _bookings.doc(bookingId).update({'status': BookingStatus.cancelled.value});
 }
