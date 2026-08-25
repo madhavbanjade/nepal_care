@@ -1,6 +1,6 @@
 /// The data collected on the "Professional profile" form. Kept as a plain
 /// model separate from the Firestore repository so the UI never has to
-/// think about map keys directly.
+/// think about map keys directly. fr
 class ProviderProfile {
   const ProviderProfile({
     required this.fullName,
