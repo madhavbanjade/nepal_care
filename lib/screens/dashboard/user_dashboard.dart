@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
@@ -6,6 +7,7 @@ import 'package:nepal_care/repositories/user_repository.dart';
 import 'package:nepal_care/screens/dashboard/provider_detail_screen.dart';
 import 'package:nepal_care/screens/dashboard/provider_list_screen.dart';
 import 'package:nepal_care/screens/bookings/my_bookings_screen.dart';
+import 'package:nepal_care/screens/chat/message_list_screen.dart';
 import 'package:nepal_care/screens/profile/profile_screen.dart';
 import 'package:nepal_care/core/enum/user_role.dart';
 import 'package:nepal_care/widgets/booking_request_dialog.dart';
@@ -64,6 +66,8 @@ class _UserDashboardState extends State<UserDashboard> {
         backgroundColor: AppColors.background,
         body: _selectedNavIndex == 3
             ? const ProfileScreen(role: UserRole.customer)
+            : _selectedNavIndex == 2
+                ? MessagesListScreen(currentUserId: FirebaseAuth.instance.currentUser!.uid)
             : _selectedNavIndex == 1
                 ? const MyBookingsScreen()
                 : SafeArea(

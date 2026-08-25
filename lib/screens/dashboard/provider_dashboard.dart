@@ -5,6 +5,10 @@ import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'package:nepal_care/models/booking.dart';
 import 'package:nepal_care/repositories/booking_repository.dart';
 import 'package:nepal_care/core/enum/user_role.dart';
+import 'package:nepal_care/core/utils/user_display_name.dart';
+import 'package:nepal_care/repositories/chat_repository.dart';
+import 'package:nepal_care/screens/chat/chat_screen.dart';
+import 'package:nepal_care/screens/chat/message_list_screen.dart';
 import 'package:nepal_care/screens/profile/profile_screen.dart';
 
 /// How soon a pending booking must start to get the "URGENT" badge and the
@@ -48,6 +52,8 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
       body: SafeArea(
         child: _selectedNavIndex == 3
             ? const ProfileScreen(role: UserRole.provider)
+            : _selectedNavIndex == 2
+                ? MessagesListScreen(currentUserId: user.uid)
             : StreamBuilder<List<Booking>>(
                 stream: BookingRepository().streamProviderBookings(user.uid),
                 builder: (context, snapshot) {
@@ -159,7 +165,6 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.calendar_today_outlined), label: 'Schedule'),
-          // TODO: wire up to a real chat/messages screen once one exists.
           NavigationDestination(icon: Icon(Icons.chat_bubble_outline_rounded), label: 'Messages'),
           NavigationDestination(icon: Icon(Icons.person_outline_rounded), selectedIcon: Icon(Icons.person_rounded), label: 'Profile'),
         ],
@@ -181,6 +186,15 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
               Text(booking.customerName, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
               const SizedBox(height: 4),
               Text(booking.serviceCategory, style: AppTextTheme.textTheme.bodySmall),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(sheetContext).pop();
+                  _startCustomerChat(context, booking);
+                },
+                icon: const Icon(Icons.chat_bubble_outline_rounded),
+                label: const Text('Message customer'),
+              ),
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -210,6 +224,43 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
         ),
       ),
     );
+  }
+
+  Future<void> _startCustomerChat(BuildContext context, Booking booking) async {
+    final provider = FirebaseAuth.instance.currentUser;
+    if (provider == null || booking.customerId.isEmpty) return;
+
+    try {
+      final conversationId = await ChatRepository().getOrCreateConversation(
+        userAId: provider.uid,
+        userAName: userDisplayName(
+          displayName: provider.displayName,
+          email: provider.email,
+          fallback: widget.providerName,
+        ),
+        userARole: 'Provider',
+        userBId: booking.customerId,
+        userBName: booking.customerName,
+        userBRole: 'Customer',
+      );
+      if (!context.mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatScreen(
+            conversationId: conversationId,
+            currentUserId: provider.uid,
+            otherUserId: booking.customerId,
+            otherUserName: booking.customerName,
+            otherUserRole: 'Customer',
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to start this conversation. Please try again.')),
+      );
+    }
   }
 }
 

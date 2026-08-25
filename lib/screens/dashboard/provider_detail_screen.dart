@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nepal_care/core/utils/user_display_name.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'package:nepal_care/models/provider_prrofile.dart';
+import 'package:nepal_care/repositories/chat_repository.dart';
+import 'package:nepal_care/screens/chat/chat_screen.dart';
 import 'package:nepal_care/widgets/booking_request_dialog.dart';
 
 /// Full profile a customer sees before booking. `fullName`, `serviceCategory`,
@@ -219,6 +223,54 @@ class _BookingBar extends StatelessWidget {
 
   final ProviderProfile profile;
 
+  Future<void> _startChat(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please log in to message this provider.')),
+      );
+      return;
+    }
+    if (profile.uid.isEmpty || profile.uid == user.uid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('This conversation is not available.')),
+      );
+      return;
+    }
+
+    try {
+      final conversationId = await ChatRepository().getOrCreateConversation(
+        userAId: user.uid,
+        userAName: userDisplayName(
+          displayName: user.displayName,
+          email: user.email,
+          fallback: 'Care-Nepal member',
+        ),
+        userARole: 'Customer',
+        userBId: profile.uid,
+        userBName: profile.fullName,
+        userBRole: profile.serviceCategory,
+      );
+      if (!context.mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatScreen(
+            conversationId: conversationId,
+            currentUserId: user.uid,
+            otherUserId: profile.uid,
+            otherUserName: profile.fullName,
+            otherUserRole: profile.serviceCategory,
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to start this conversation. Please try again.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
@@ -230,6 +282,12 @@ class _BookingBar extends StatelessWidget {
           top: false,
           child: Row(
             children: [
+              OutlinedButton.icon(
+                onPressed: () => _startChat(context),
+                icon: const Icon(Icons.chat_bubble_outline_rounded),
+                label: const Text('Message'),
+              ),
+              const SizedBox(width: 10),
               if (profile.hourlyRate > 0)
                 Expanded(
                   child: Column(
@@ -241,7 +299,7 @@ class _BookingBar extends StatelessWidget {
                   ),
                 ),
               SizedBox(
-                width: profile.hourlyRate > 0 ? 160 : double.infinity,
+                width: profile.hourlyRate > 0 ? 130 : 150,
                 child: FilledButton(
                   onPressed: () => showDialog<void>(
                     context: context,

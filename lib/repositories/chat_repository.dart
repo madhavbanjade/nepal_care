@@ -41,6 +41,9 @@ class ChatRepository {
     required String userBName,
     required String userBRole,
   }) async {
+    if (userAId.isEmpty || userBId.isEmpty || userAId == userBId) {
+      throw ArgumentError('A conversation needs two different users.');
+    }
     final existing = await _conversations
         .where('participantIds', arrayContains: userAId)
         .get();
