@@ -28,5 +28,7 @@ class AppColors {
   static const Color statusPinkBg = Color(0xFFF7B9B9);
   static const Color statusGreenText = Color(0xFF2E7D3A);
 
+  static get primary => null;
+
 
 }
