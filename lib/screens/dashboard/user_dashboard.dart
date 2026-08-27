@@ -4,26 +4,30 @@ import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'package:nepal_care/models/provider_prrofile.dart';
 import 'package:nepal_care/repositories/user_repository.dart';
+import 'package:nepal_care/repositories/chat_repository.dart';
 import 'package:nepal_care/screens/dashboard/provider_detail_screen.dart';
 import 'package:nepal_care/screens/dashboard/provider_list_screen.dart';
 import 'package:nepal_care/screens/bookings/my_bookings_screen.dart';
 import 'package:nepal_care/screens/chat/message_list_screen.dart';
+import 'package:nepal_care/screens/chat/chat_screen.dart';
 import 'package:nepal_care/screens/profile/profile_screen.dart';
 import 'package:nepal_care/core/enum/user_role.dart';
 import 'package:nepal_care/widgets/booking_request_dialog.dart';
 
-/// Customer home screen. Only providers verified in Firestore are displayed. ihiwhbihwr
+/// Customer home screen. Only providers verified in Firestore are displayed.
 class UserDashboard extends StatefulWidget {
   const UserDashboard({
     super.key,
     this.userName = 'Aarav',
     this.locationLabel = 'Kathmandu, Ward 10',
     this.repository,
+    this.chatRepository,
   });
 
   final String userName;
   final String locationLabel;
   final UserRepository? repository;
+  final ChatRepository? chatRepository;
 
   @override
   State<UserDashboard> createState() => _UserDashboardState();
@@ -31,6 +35,7 @@ class UserDashboard extends StatefulWidget {
 
 class _UserDashboardState extends State<UserDashboard> {
   late final UserRepository _repository = widget.repository ?? UserRepository();
+  late final ChatRepository _chatRepository = widget.chatRepository ?? ChatRepository();
   final _searchController = TextEditingController();
   String _query = '';
   int _selectedCategory = 0;
@@ -59,6 +64,60 @@ class _UserDashboardState extends State<UserDashboard> {
         '${profile.fullName} ${profile.serviceCategory}'
             .toLowerCase()
             .contains(_query.toLowerCase());
+  }
+
+  /// Opens (creating if needed) a conversation with [profile] and pushes
+  /// straight into the chat. This is the entry point that actually creates
+  /// the Firestore conversation doc — nothing else in the app calls
+  /// getOrCreateConversation, so Messages stayed empty until a customer
+  /// starts talking to a provider from here.
+  Future<void> _messageProvider(ProviderProfile profile) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
+    // NOTE: assumes ProviderProfile.uid is the provider's `users/{uid}`
+    // document id (matches your Firestore rules, which key on userId).
+    // If your model exposes this under a different field name, swap it in.
+    final providerId = profile.uid;
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final conversationId = await _chatRepository.getOrCreateConversation(
+        userAId: currentUser.uid,
+        userAName: currentUser.displayName ?? widget.userName,
+        userARole: 'Customer',
+        userBId: providerId,
+        userBName: profile.fullName,
+        userBRole: profile.serviceCategory,
+      );
+
+      if (!mounted) return;
+      Navigator.of(context).pop(); // close the loading dialog
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ChatScreen(
+            conversationId: conversationId,
+            currentUserId: currentUser.uid,
+            otherUserId: providerId,
+            otherUserName: profile.fullName,
+            otherUserRole: profile.serviceCategory,
+            repository: _chatRepository,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not start conversation: $e')),
+      );
+    }
   }
 
   @override
@@ -152,7 +211,10 @@ class _UserDashboardState extends State<UserDashboard> {
                           ...visibleProfiles.map(
                             (profile) => Padding(
                               padding: const EdgeInsets.only(bottom: 12),
-                              child: _ProviderCard(profile: profile),
+                              child: _ProviderCard(
+                                profile: profile,
+                                onMessage: () => _messageProvider(profile),
+                              ),
                             ),
                           ),
                       ]),
@@ -296,8 +358,9 @@ class _CategoryItem extends StatelessWidget {
 }
 
 class _ProviderCard extends StatelessWidget {
-  const _ProviderCard({required this.profile});
+  const _ProviderCard({required this.profile, required this.onMessage});
   final ProviderProfile profile;
+  final VoidCallback onMessage;
 
   String get _initials => profile.fullName.split(RegExp(r'\s+')).where((name) => name.isNotEmpty).take(2).map((name) => name[0].toUpperCase()).join();
 
@@ -343,7 +406,22 @@ class _ProviderCard extends StatelessWidget {
             ])),
             const SizedBox(width: 6),
             Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border_rounded, size: 18), visualDensity: VisualDensity.compact),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // New: message the provider directly. This is also the
+                  // entry point that actually creates the conversation doc
+                  // via ChatRepository.getOrCreateConversation — nothing
+                  // else in the app calls it yet.
+                  IconButton(
+                    onPressed: onMessage,
+                    icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+                    visualDensity: VisualDensity.compact,
+                    tooltip: 'Message',
+                  ),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border_rounded, size: 18), visualDensity: VisualDensity.compact),
+                ],
+              ),
               const SizedBox(height: 6),
               SizedBox(
                 height: 29,
