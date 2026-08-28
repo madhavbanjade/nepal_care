@@ -10,7 +10,7 @@ void main() async {
   //this is the firebase intilization optins for flutter... 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-//Google Sign-In should be initialized once, before your login/signup screen tries to use: make thi jwbbfwf` 
+//Google Sign-In should be initialized once, before your login/signup screen tries to use: make th` 
   await GoogleSignIn.instance.initialize(
     serverClientId: '679531876538-19jbuuaed5hmm1dpru3040m0f3r2rsv4.apps.googleusercontent.com'
   );
