@@ -4,7 +4,7 @@ import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 /// One pill in the Google / Apple row. [backgroundColor] defaults to white
 /// with a border (Google-style); pass a color for the filled variant
-/// (the mockup shows a light green fill for the second pill) kw.
+/// (the mockup shows a light green fill for the second pill) 
 class SocialLoginButton extends StatelessWidget {
   const SocialLoginButton({
     super.key,
