@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nepal_care/core/theme/app_colors.dart';
 
 /// The colored rounded-square icon used on status screens — pink with a
-/// message icon on the OTP screen, green with a shield-check on Verifie  d   .
+/// message icon on the OTP screen, green with a shield-check on Verifie  d  vwrrwwrr .
 class StatusIconBadge extends StatelessWidget {
   const StatusIconBadge({
     super.key,
