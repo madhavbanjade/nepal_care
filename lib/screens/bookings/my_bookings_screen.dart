@@ -12,8 +12,8 @@ const _avatarPalette = <Color>[
   Color(0xFFFFE7A8),
   Color(0xFFD9D7E8),
 ];
-
-// FSQ
+ 
+// FSQ ver
 class MyBookingsScreen extends StatefulWidget {
   const MyBookingsScreen({super.key});
 
