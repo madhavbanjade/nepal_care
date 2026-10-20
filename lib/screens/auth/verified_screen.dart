@@ -6,7 +6,7 @@ import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 
-/// Shown once the OTP is "verified" (dummy — no backend yet).
+/// Shown once the OTP is "verified" (dummy — no backend yet). S WQEVevQ
 class VerifiedScreen extends StatelessWidget {
   const VerifiedScreen({super.key});
 

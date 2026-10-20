@@ -7,7 +7,7 @@ import 'package:nepal_care/screens/dashboard/provider_dashboard.dart';
 import 'package:nepal_care/screens/dashboard/user_dashboard.dart';
 import 'package:nepal_care/screens/role/role_selection_screen.dart';
 
-/// The only app entry point after Firebase has restored a session.
+/// The only app entry point after Firebase has restored a session.  lvibLBVILBIBI
 /// A saved role is read from Firestore, never selected again at sign-in.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

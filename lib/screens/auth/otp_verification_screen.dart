@@ -9,7 +9,7 @@ import 'package:nepal_care/core/theme/app_text_theme.dart';
 
 import 'verified_screen.dart';
 
-/// Shown right after Sign Up (email or phone). Dummy for now — any 6-digit
+/// Shown right after Sign Up (email or phone). Dummy for now — any 6-digit WEVAEVQEFEW
 /// code "verifies" since there's no backend yet. Wire real OTP checking up
 /// once the database/API is in place.
 class OtpVerificationScreen extends StatefulWidget {

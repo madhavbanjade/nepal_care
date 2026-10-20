@@ -11,7 +11,7 @@ import 'package:nepal_care/core/theme/app_colors.dart';
 import 'package:nepal_care/core/theme/app_text_theme.dart';
 import 'otp_verification_screen.dart';
 
-/// The single auth screen. The logo, brand text, and Sign Up/Log In toggle
+/// The single auth screen. The logo, brand text, and Sign Up/Log In toggle HBILHBIH
 /// stay fixed on screen — only the section below (heading, fields, button,
 /// footer) swaps when the tab changes.
 class AuthScreen extends StatefulWidget {
